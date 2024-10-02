@@ -14,8 +14,15 @@ nav {
   background-color: azure;
 }
 
+a {
+  text-decoration: none;
+  color: inherit; 
+}
+
 .logo {
   font-size: 22px;
+  color: black;
+  font-weight: bold;
 }
 
 .nav-links {
@@ -29,7 +36,7 @@ nav {
 }
 
 .nav-links a {
-  text-decoration: none;
+  /* text-decoration: none; */
   color: black;
   font-weight: bold;
 }
