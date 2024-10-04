@@ -41,12 +41,16 @@ input[type='submit'] {
 
 ul {
   list-style: none;
-  margin-left: 0.5em;
   padding-left: 0;
 }
 
 li {
+  margin-top: 0.5em;
   margin-bottom: 0.5em;
+}
+
+.deleteButton {
+  padding: 0.1em 0.5em;
 }
 
 .logo {
