@@ -1,9 +1,9 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 type User = {
-    value: string;
+    name: string;
     readonly id: number;
-    removed: boolean;
   }
 
 const User = () => {
@@ -18,42 +18,61 @@ const User = () => {
   const handleSubmit = () => {
     if (!text) return;
 
-    const newUser: User = {
-      value: text,
-      id: new Date().getTime(),
-      removed: false,
+    const newUser: Omit<User, 'id'> = {
+      name: text,
     }
 
-    setUsers((users) => [newUser, ...users])
-
-    setText('');
-  }
-
-  const handleEdit = (id: number, value: string) => {
-    setUsers((users) => {
-      const newUsers = users.map((user) => {
-        if (user.id === id) {
-          return {...user, value};
-        }
-        return user;
-      })
-      return newUsers;
-    });  
-  }
-
-  const handleRemove = (id: number, removed: boolean) => {
-    setUsers((users) => {
-      const newUsers = users.map((user) => {
-        if (user.id === id) {
-          return {...user, removed};
-        }
-        return user;
-      });
-      
-      const filteredRemovedUsers = newUsers.filter((user) => !user.removed);
-      return filteredRemovedUsers;
+    axios.post('http://127.0.0.1:8000/api/users/', newUser, {
+      headers: {
+        'Content-Type': 'application/json',
+    }})
+    .then(res => {
+      setUsers((users) => [...users, res.data]);
+      setText('');
     })
-  };
+  }
+
+  const handleEdit = (id: number, name: string) => {
+
+    console.log("Sending update for user ID:", id, "with name:", name); // ここでデバッグ出力
+
+    axios.put(`http://127.0.0.1:8000/api/users/${id}`, {name}, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    // .then(res => {setUsers(users.map(user => user.id === id ? res.data : user))});
+    .then(() => {
+      setUsers((users) => {
+        const newUsers = users.map((user) => {
+          if (user.id === id) {
+            return {...user, name};
+          }
+          return user;
+        })
+        return newUsers;
+      });  
+    });
+  }
+
+  // const handleRemove = (id: number, removed: boolean) => {
+  //   setUsers((users) => {
+  //     const newUsers = users.map((user) => {
+  //       if (user.id === id) {
+  //         return {...user, removed};
+  //       }
+  //       return user;
+  //     });
+      
+  //     const filteredRemovedUsers = newUsers.filter((user) => !user.removed);
+  //     return filteredRemovedUsers;
+  //   })
+  // };
+
+  useEffect(() => {
+    axios.get('http://127.0.0.1:8000/api/users/')
+    .then(res => {setUsers(res.data)})
+  }, [])
 
   return (
     <div>
@@ -79,10 +98,10 @@ const User = () => {
             <li key={user.id}>
               <input 
                 type="text"
-                value={user.value}
+                value={user.name}
                 onChange={(e) => handleEdit(user.id, e.target.value)}
               />
-              <button className="deleteButton" onClick={() => handleRemove(user.id, !user.removed)}>削除</button>
+              {/* <button className="deleteButton" onClick={() => handleRemove(user.id, !user.removed)}>削除</button> */}
             </li>
           );
         })}
