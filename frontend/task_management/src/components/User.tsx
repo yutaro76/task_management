@@ -33,15 +33,12 @@ const User = () => {
   }
 
   const handleEdit = (id: number, name: string) => {
-
-    console.log("Sending update for user ID:", id, "with name:", name); // ここでデバッグ出力
-
-    axios.put(`http://127.0.0.1:8000/api/users/${id}`, {name}, {
+    const updateName = {name: name};
+    axios.put(`http://127.0.0.1:8000/api/users/${id}/`, updateName, {
       headers: {
         'Content-Type': 'application/json',
       }
     })
-    // .then(res => {setUsers(users.map(user => user.id === id ? res.data : user))});
     .then(() => {
       setUsers((users) => {
         const newUsers = users.map((user) => {
@@ -55,23 +52,20 @@ const User = () => {
     });
   }
 
-  // const handleRemove = (id: number, removed: boolean) => {
-  //   setUsers((users) => {
-  //     const newUsers = users.map((user) => {
-  //       if (user.id === id) {
-  //         return {...user, removed};
-  //       }
-  //       return user;
-  //     });
-      
-  //     const filteredRemovedUsers = newUsers.filter((user) => !user.removed);
-  //     return filteredRemovedUsers;
-  //   })
-  // };
+  const handleRemove = (id: number) => {
+    axios.delete(`http://127.0.0.1:8000/api/users/${id}/`, {
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    })
+    .then(() => {
+      setUsers(users.filter(user => user.id !== id));
+   });
+  }
 
   useEffect(() => {
     axios.get('http://127.0.0.1:8000/api/users/')
-    .then(res => {setUsers(res.data)})
+    .then(res => {setUsers(res.data)});
   }, [])
 
   return (
@@ -101,7 +95,7 @@ const User = () => {
                 value={user.name}
                 onChange={(e) => handleEdit(user.id, e.target.value)}
               />
-              {/* <button className="deleteButton" onClick={() => handleRemove(user.id, !user.removed)}>削除</button> */}
+              <button className="deleteButton" onClick={() => handleRemove(user.id)}>削除</button>
             </li>
           );
         })}
