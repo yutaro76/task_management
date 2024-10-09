@@ -33,6 +33,18 @@ const User = () => {
   }
 
   const handleEdit = (id: number, name: string) => {
+    setUsers((users) => {
+      const newUsers = users.map((user) => {
+        if (user.id === id) {
+          return {...user, name};
+        }
+        return user;
+      })
+      return newUsers;
+    });  
+  }
+
+  const handleUpdate = (id: number, name: string) => {
     const updateName = {name: name};
     axios.put(`http://127.0.0.1:8000/api/users/${id}/`, updateName, {
       headers: {
@@ -96,6 +108,7 @@ const User = () => {
                 onChange={(e) => handleEdit(user.id, e.target.value)}
               />
               <button className="deleteButton" onClick={() => handleRemove(user.id)}>削除</button>
+              <button className="updateButton" onClick={() => handleUpdate(user.id, user.name)} disabled={!user.name.trim()}>更新</button>
             </li>
           );
         })}

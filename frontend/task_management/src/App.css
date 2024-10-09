@@ -53,6 +53,11 @@ li {
   padding: 0.1em 0.5em;
 }
 
+.updateButton {
+  padding: 0.1em 0.5em;
+  margin-left: 0.5em;
+}
+
 .logo {
   font-size: 22px;
   color: black;
